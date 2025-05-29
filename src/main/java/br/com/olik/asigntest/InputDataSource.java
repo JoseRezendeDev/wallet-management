@@ -1,17 +1,21 @@
 package br.com.olik.asigntest;
 
+import br.com.olik.asigntest.entity.Wallet;
+import br.com.olik.asigntest.repository.WalletRepository;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class InputDataSource {
 
     private final WalletRepository walletRepository;
+
+    public InputDataSource(WalletRepository walletRepository) {
+        this.walletRepository = walletRepository;
+    }
 
     @PostConstruct
     public void init() {

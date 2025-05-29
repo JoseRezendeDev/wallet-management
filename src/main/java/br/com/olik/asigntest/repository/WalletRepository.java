@@ -1,5 +1,6 @@
-package br.com.olik.asigntest;
+package br.com.olik.asigntest.repository;
 
+import br.com.olik.asigntest.entity.Wallet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
