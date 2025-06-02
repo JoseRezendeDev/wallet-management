@@ -1,9 +1,9 @@
 package br.com.olik.asigntest.controller;
 
 import br.com.olik.asigntest.dto.TransactionDto;
-import br.com.olik.asigntest.entity.Wallet;
-import br.com.olik.asigntest.repository.WalletRepository;
-import br.com.olik.asigntest.service.WalletService;
+import br.com.olik.asigntest.dto.WalletDto;
+import br.com.olik.asigntest.usecase.GetAmount;
+import br.com.olik.asigntest.usecase.ProcessTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -19,25 +19,24 @@ public class WalletController {
 
     Logger logger = LoggerFactory.getLogger(WalletController.class);
 
-    private final WalletService walletService;
+    private final GetAmount getAmount;
+    private final ProcessTransaction processTransaction;
 
-    public WalletController(WalletService walletService) {
-        this.walletService = walletService;
+    public WalletController(GetAmount getAmount, ProcessTransaction processTransaction) {
+        this.getAmount = getAmount;
+        this.processTransaction = processTransaction;
     }
 
     @GetMapping("/amount")
     public ResponseEntity<BigDecimal> getAmount(Long userId) {
-        return ResponseEntity.ok(walletService.getAmount(userId));
+        return ResponseEntity.ok(getAmount.get(userId));
     }
 
     @PostMapping("/transaction")
-    public BigDecimal transaction(@RequestBody TransactionDto transactionDto) {
+    public ResponseEntity<BigDecimal> transaction(@RequestBody TransactionDto transactionDto) {
         logger.info("Start Transaction {}", transactionDto);
-//        Wallet wallet = walletRepository.findByUserId(transactionDto.getUserId());
-//        wallet.setAmount(wallet.getAmount().add(transactionDto.getAmount()));
-//        walletRepository.save(wallet);
-//        logger.info("Wallet {}", wallet);
-//        return wallet.getAmount();
-        return null;
+        WalletDto walletDto = processTransaction.process(transactionDto);
+        logger.info("Wallet {}", walletDto);
+        return ResponseEntity.ok(walletDto.amount());
     }
 }

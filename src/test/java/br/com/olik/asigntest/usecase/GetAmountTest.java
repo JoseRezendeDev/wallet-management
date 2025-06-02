@@ -1,4 +1,4 @@
-package br.com.olik.asigntest.service;
+package br.com.olik.asigntest.usecase;
 
 import br.com.olik.asigntest.entity.Wallet;
 import br.com.olik.asigntest.exception.WalletNotFoundException;
@@ -15,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class WalletServiceTest {
+class GetAmountTest {
 
     @Mock
     private WalletRepository walletRepository;
 
     @InjectMocks
-    private WalletService walletService;
+    private GetAmount getAmount;
 
     @Test
     public void getAmountHappyFlow() {
@@ -36,7 +36,7 @@ class WalletServiceTest {
 
         when(walletRepository.findByUserId(userId)).thenReturn(wallet);
 
-        BigDecimal amount = walletService.getAmount(userId);
+        BigDecimal amount = getAmount.get(userId);
 
         verify(walletRepository).findByUserId(userId);
         verifyNoMoreInteractions(walletRepository);
@@ -58,7 +58,7 @@ class WalletServiceTest {
         when(walletRepository.findByUserId(userId)).thenReturn(null);
 
         try {
-            BigDecimal amount = walletService.getAmount(userId);
+            BigDecimal amount = getAmount.get(userId);
             fail("Should have thrown exception");
         } catch (WalletNotFoundException e) {
             verify(walletRepository).findByUserId(userId);
@@ -71,7 +71,7 @@ class WalletServiceTest {
     @Test
     public void getAmountUserIdMissing() {
         try {
-            BigDecimal amount = walletService.getAmount(null);
+            BigDecimal amount = getAmount.get(null);
             fail("Should have thrown exception");
         } catch (IllegalArgumentException e) {
             verifyNoMoreInteractions(walletRepository);
