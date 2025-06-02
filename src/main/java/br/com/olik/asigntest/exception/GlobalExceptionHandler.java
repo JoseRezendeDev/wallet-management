@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(Throwable t) {
+    @ExceptionHandler({IllegalArgumentException.class, InsufficientBalanceException.class})
+    public ResponseEntity<ApiErrorResponse> handleBadRequestException(Throwable t) {
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), t.getMessage(), LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(apiErrorResponse);

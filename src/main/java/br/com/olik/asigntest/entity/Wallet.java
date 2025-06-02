@@ -1,5 +1,7 @@
 package br.com.olik.asigntest.entity;
 
+import br.com.olik.asigntest.exception.InsufficientBalanceException;
+import br.com.olik.asigntest.exception.NegativeBalanceException;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -24,6 +26,21 @@ public class Wallet {
     }
 
     public Wallet() {
+    }
+
+    public void processTransaction(BigDecimal amount) {
+        if (BigDecimal.ZERO.compareTo(amount) > 0) {
+            if (BigDecimal.ZERO.compareTo(this.amount) > 0) {
+                throw new NegativeBalanceException("Balance is already negative, cannot do transactions anymore");
+            }
+
+            if (WalletType.DEBIT.equals(this.type)
+                    && BigDecimal.ZERO.compareTo(this.amount.add(amount)) > 0) {
+                throw new InsufficientBalanceException("Insufficient balance for this transaction");
+            }
+        }
+
+        this.amount = this.amount.add(amount);
     }
 
     public static Builder builder() {
@@ -83,21 +100,5 @@ public class Wallet {
 
     public WalletType getType() {
         return type;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public void setType(WalletType type) {
-        this.type = type;
     }
 }

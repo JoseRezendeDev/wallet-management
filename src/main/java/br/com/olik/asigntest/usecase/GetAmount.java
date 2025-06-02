@@ -1,4 +1,4 @@
-package br.com.olik.asigntest.service;
+package br.com.olik.asigntest.usecase;
 
 import br.com.olik.asigntest.entity.Wallet;
 import br.com.olik.asigntest.exception.WalletNotFoundException;
@@ -10,15 +10,15 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class WalletService {
+public class GetAmount {
 
     private final WalletRepository walletRepository;
 
-    public WalletService(WalletRepository walletRepository) {
+    public GetAmount(WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
     }
 
-    public BigDecimal getAmount(Long userId) {
+    public BigDecimal get(Long userId) {
         validateRequest(userId);
 
         Wallet wallet = walletRepository.findByUserId(userId);
