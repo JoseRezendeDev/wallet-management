@@ -3,14 +3,18 @@ package br.com.olik.asigntest.usecase;
 import br.com.olik.asigntest.dto.TransactionDto;
 import br.com.olik.asigntest.dto.WalletDto;
 import br.com.olik.asigntest.entity.Wallet;
+import br.com.olik.asigntest.exception.InsufficientBalanceException;
 import br.com.olik.asigntest.repository.WalletRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Service
 public class ProcessTransaction {
+
+    Logger logger = LoggerFactory.getLogger(ProcessTransaction.class);
 
     private final WalletRepository walletRepository;
 
@@ -23,7 +27,13 @@ public class ProcessTransaction {
 
         Wallet wallet = walletRepository.findByUserId(transactionDto.userId());
 
-        wallet.processTransaction(transactionDto.amount());
+        try {
+            wallet.processTransaction(transactionDto.amount());
+        } catch (InsufficientBalanceException e) {
+            // Send text message (SMS) to customer with user ID transactionDto.userId()
+            logger.info("Transaction denied due to insufficient balance, sending text message to customer {}", transactionDto.userId());
+            throw e;
+        }
 
         Wallet updatedWallet = walletRepository.save(wallet);
 
