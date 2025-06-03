@@ -21,6 +21,9 @@ public class Wallet {
 
     private WalletType type;
 
+    @Version
+    private Long version;
+
     public enum WalletType {
         DEBIT, CREDIT
     }
